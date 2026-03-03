@@ -20,6 +20,7 @@ public class BoardService {
     public void createPost(PostDTO dto) {
         Post post = new Post(dto.getId(), dto.getTitle(), dto.getContent(), dto.getAuthor());
         boardRepository.save(post);
+        System.out.println("인스턴스" + this);
         System.out.println("게시글 작성 완료");
     }
 
@@ -28,6 +29,7 @@ public class BoardService {
      */
     public Post getPost(Long id) {
         System.out.println("게시글 조회 완료");
+        System.out.println("인스턴스" + this);
         return boardRepository.findById(id);
     }
 }

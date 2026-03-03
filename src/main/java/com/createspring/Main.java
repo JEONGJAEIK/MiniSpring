@@ -17,16 +17,15 @@ import java.net.URISyntaxException;
 public class Main {
     public static void main(String[] args) throws LifecycleException, IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         BeanFactory.initialize("com.createspring");
-        BeanFactory beanFactory = new BeanFactory();
         Tomcat tomcat = new Tomcat();
         tomcat.setPort(8080);
         tomcat.getConnector();
 
         Context context = tomcat.addContext("", new File(".").getAbsolutePath());
-        Tomcat.addServlet(context, "postSearchController", beanFactory.getBean(PostSearchController.class).toString());
+        Tomcat.addServlet(context, "postSearchController", BeanFactory.getBean(PostSearchController.class));
         context.addServletMappingDecoded("/post/search", "postSearchController");
 
-        Tomcat.addServlet(context, "postCreateController", beanFactory.getBean(PostCreateController.class).toString());
+        Tomcat.addServlet(context, "postCreateController", BeanFactory.getBean(PostCreateController.class));
         context.addServletMappingDecoded("/post/create", "postCreateController");
 
         tomcat.start();

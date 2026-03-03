@@ -5,23 +5,19 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class BeanFactory {
-    private static Set<Class<?>> beanDefinitions = new HashSet<>();
     private static Map<Class<?>, Object> beans = new HashMap<>();
 
-    public static void initialize(String basePackage) throws IOException, URISyntaxException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        BeanDefinition.createBeanDefinition(basePackage);
-        beanDefinitions = BeanDefinition.getBeanDefinitions();
+    public static void initialize(String basePackage) throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        Set<Class<?>> beanDefinition = BeanDefinition.initBeanDefinition(basePackage);
 
-        for (Class<?> clazz : beanDefinitions) {
+        for (Class<?> clazz : beanDefinition) {
             dependencyInject(clazz);
         }
     }
-
 
     public static <T> T dependencyInject(Class<T> clazz) throws InvocationTargetException, InstantiationException, IllegalAccessException {
         if (beans.containsKey(clazz)) {
@@ -37,12 +33,12 @@ public class BeanFactory {
         }
 
         Object instance = constructor.newInstance(dependencies);
-        System.out.println(clazz + "의존관계 주입 완료");
         beans.put(clazz, instance);
+        System.out.println(clazz + "의존관계 주입 완료");
         return clazz.cast(instance);
     }
 
-    public Object getBean(Class<?> clazz) {
-        return beans.get(clazz);
+    public static <T> T getBean(Class<T> clazz) {
+        return clazz.cast(beans.get(clazz));
     }
 }

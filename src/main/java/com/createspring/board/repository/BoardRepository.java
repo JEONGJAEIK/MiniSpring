@@ -13,9 +13,11 @@ public class BoardRepository {
 
     public void save(Post p) {
         postMemory.put(p.getId(), p);
+        System.out.println("인스턴스" + this);
     }
 
     public Post findById(Long id) {
+        System.out.println("인스턴스" + this);
         return postMemory.get(id);
     }
 }

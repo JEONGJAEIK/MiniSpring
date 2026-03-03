@@ -8,7 +8,23 @@ import java.util.*;
 
 public class ComponentScan {
 
-    public static Set<Class<?>> scanPackage(String packageName) throws IOException, URISyntaxException, ClassNotFoundException {
+    public static Set<Class<?>> scanComponent(String basePackage) throws IOException, URISyntaxException, ClassNotFoundException {
+        Set<Class<?>> classes = scanPackage(basePackage);
+        Set<Class<?>> beanDefinition = new HashSet<>();
+
+        for (Class<?> clazz : classes) {
+            System.out.println(clazz.toString() + "빈 삽입 검사");
+            if (clazz.isAnnotationPresent(Service.class) ||
+                    clazz.isAnnotationPresent(Repository.class) ||
+                    clazz.isAnnotationPresent(RestController.class)) {
+                beanDefinition.add(clazz);
+                System.out.println(clazz + "빈 정의 삽입");
+            }
+        }
+        return beanDefinition;
+    }
+
+    private static Set<Class<?>> scanPackage(String packageName) throws IOException, URISyntaxException, ClassNotFoundException {
         Set<Class<?>> classes = new HashSet<>();
         String path = packageName.replace(".", "/");
 
