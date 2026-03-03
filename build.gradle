@@ -1,6 +1,13 @@
 plugins {
     id 'java'
+    id 'application'
 }
+
+application {
+    mainClass = 'com.createspring.Main'
+    applicationDefaultJvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED']
+}
+
 
 group = 'com.createspring'
 version = '1.0.0'

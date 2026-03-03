@@ -17,6 +17,7 @@ import java.util.Set;
  */
 public class BeanFactory {
     private static Map<Class<?>, Object> beans = new HashMap<>();
+    private static PostBeanProcessor postBeanProcessor;
 
     /**
      * 빈 팩토리를 초기화한다. 톰캣이 실행되기 전에 미리 실행한다.
@@ -24,13 +25,11 @@ public class BeanFactory {
      * 완료되면 빈 후처리기에 빈을 전달한다.
      */
     public static void initialize(String basePackage) throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        PostBeanProcessor postBeanProcessor = new PostBeanProcessor(new ProxyFactory());
+        postBeanProcessor = new PostBeanProcessor(new ProxyFactory());
         Set<Class<?>> beanDefinition = BeanDefinition.initBeanDefinition(basePackage);
 
         for (Class<?> clazz : beanDefinition) {
-            Object bean = dependencyInject(clazz);
-            Object object = postBeanProcessor.scanTargetProxy(bean, clazz);
-            beans.put(clazz, object);
+            dependencyInject(clazz);
         }
     }
 
@@ -40,6 +39,7 @@ public class BeanFactory {
      * 리플렉션을 이용하여 클래스의 생성자와 매개변수를 가져온다. 재귀적으로 실행한다.
      * boardController -> boardService -> boardRepository 순으로 DFS로 실행한다.
      * 리플렉션을 이용하여 객체를 생성하고 빈에 삽입한다.
+     * 생성 직후 빈 후처리기를 적용하여 프록시가 필요한 빈은 프록시로 교체한다.
      */
     public static <T> T dependencyInject(Class<T> clazz) throws InvocationTargetException, InstantiationException, IllegalAccessException {
         if (beans.containsKey(clazz)) {
@@ -56,8 +56,10 @@ public class BeanFactory {
         }
 
         Object instance = constructor.newInstance(dependencies);
+        Object processed = postBeanProcessor.scanTargetProxy(instance, clazz);
+        beans.put(clazz, processed);
         System.out.println(clazz + "빈 생성 완료");
-        return clazz.cast(instance);
+        return clazz.cast(processed);
     }
 
     /**
