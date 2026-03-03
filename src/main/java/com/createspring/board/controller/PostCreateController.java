@@ -1,20 +1,22 @@
 package com.createspring.board.controller;
+
 import com.createspring.board.dto.PostDTO;
-import com.createspring.board.repository.BoardRepository;
 import com.createspring.board.service.BoardService;
-import jakarta.servlet.ServletException;
+import com.createspring.spring.RestController;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-
+@RestController
 public class PostCreateController extends HttpServlet {
+    private final BoardService boardService;
+
+    public PostCreateController(BoardService boardService) {
+        this.boardService = boardService;
+    }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        BoardRepository boardRepository = new BoardRepository();
-        BoardService boardService = new BoardService(boardRepository);
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         PostDTO postDTO = new PostDTO(1L, "제목", "내용", "홍길동");
         boardService.createPost(postDTO);
     }

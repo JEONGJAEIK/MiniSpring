@@ -3,19 +3,21 @@ package com.createspring.board.controller;
 import com.createspring.board.entity.Post;
 import com.createspring.board.repository.BoardRepository;
 import com.createspring.board.service.BoardService;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
+import com.createspring.spring.RestController;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-
+@RestController
 public class PostSearchController extends HttpServlet {
+    private final BoardService boardService;
+
+    public PostSearchController(BoardService boardService) {
+        this.boardService = boardService;
+    }
+
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        BoardRepository boardRepository = new BoardRepository();
-        BoardService boardService = new BoardService(boardRepository);
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         Post post = boardService.getPost(1L);
         System.out.println(post.toString());
     }
