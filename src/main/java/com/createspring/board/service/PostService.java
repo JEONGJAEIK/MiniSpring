@@ -10,6 +10,8 @@ import com.createspring.spring.annotation.Service;
 
 @Service
 public class PostService {
+    // TODO 현재는 옵저버 패턴만을 적용하여 발행자의 중복이 있다.
+    //  스프링 이벤트리스너를 직접구현하고 발행자 중복을 없애보자
     private final BoardRepository boardRepository;
     private final BoardEventPublisher boardEventPublisher;
     private final BoardEventPublisher2 boardEventPublisher2;
