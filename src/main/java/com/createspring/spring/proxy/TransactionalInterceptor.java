@@ -1,7 +1,7 @@
 package com.createspring.spring.proxy;
 
-import com.createspring.ConnectionUtil;
 import com.createspring.spring.annotation.Transactional;
+import com.createspring.spring.jdbc.DataSourceTransactionManager;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
@@ -24,16 +24,16 @@ public class TransactionalInterceptor implements MethodInterceptor {
     @Override
     public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
         if (method.isAnnotationPresent(Transactional.class)) {
-            ConnectionUtil.begin();
+            DataSourceTransactionManager.begin();
             try {
                 Object result = methodProxy.invoke(object, objects);
-                ConnectionUtil.commit();
+                DataSourceTransactionManager.commit();
                 return result;
             } catch (Exception e) {
-                ConnectionUtil.rollback();
+                DataSourceTransactionManager.rollback();
                 throw e;
             } finally {
-                ConnectionUtil.close();
+                DataSourceTransactionManager.close();
             }
         }
         return methodProxy.invoke(object, objects);

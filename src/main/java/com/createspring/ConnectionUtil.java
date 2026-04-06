@@ -42,37 +42,4 @@ public class ConnectionUtil {
         }
     }
 
-    /**
-     * 인터셉터 호출용 메서드 트랜잭션 시작
-     */
-    public static void begin() throws SQLException {
-        Connection con = getConnection();
-        con.setAutoCommit(false);
-        connectionHolder.set(con);
-    }
-
-    /**
-     * 인터셉터 호출용 메서드 커밋
-     */
-    public static void commit() throws SQLException {
-        connectionHolder.get().commit();
-    }
-
-    /**
-     * 인터셉터 호출용 메서드 롤백
-     */
-    public static void rollback() throws SQLException {
-        connectionHolder.get().rollback();
-    }
-
-    public static void close() {
-        Connection con = connectionHolder.get();
-        if (con != null) {
-            try {
-                con.close();
-            } catch (SQLException e) {
-                System.out.println("커넥션이 조졌다");
-            }
-        }
-    }
 }
