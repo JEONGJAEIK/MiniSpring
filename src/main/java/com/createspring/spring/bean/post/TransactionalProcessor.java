@@ -1,26 +1,18 @@
-package com.createspring.spring.bean;
+package com.createspring.spring.bean.post;
 
 import com.createspring.spring.annotation.Transactional;
 import com.createspring.spring.proxy.ProxyFactory;
 
 import java.lang.reflect.Method;
 
-/**
- * 빈 후처리기
- */
-public class PostBeanProcessor {
-    private final ProxyFactory proxyFactory;
-
-    public PostBeanProcessor(ProxyFactory proxyFactory) {
-        this.proxyFactory = proxyFactory;
-    }
+public class TransactionalProcessor {
 
     /**
-     * 트랜잭셔널이 달린 클래스와 메서드를 판별하여 프록시팩토리로 전달한다.
+     * 트랜잭셔널이 달린 클래스의 프록시를 반환한다.
      */
-    public Object scanTargetProxy(Object o, Class<?> clazz) {
+    public static Object getTransactionalProxy(Class<?> clazz, Object o) {
         if (clazz.isAnnotationPresent(Transactional.class) || hasTransactionalMethod(clazz)) {
-            return proxyFactory.handleInterceptor(o);
+            return ProxyFactory.handleInterceptor(o);
         }
         return o;
     }
@@ -28,7 +20,7 @@ public class PostBeanProcessor {
     /**
      * 트랜잭셔널이 달린 메서드를 판별한다.
      */
-    private boolean hasTransactionalMethod(Class<?> clazz) {
+    private static boolean hasTransactionalMethod(Class<?> clazz) {
         for (Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(Transactional.class)) {
                 return true;

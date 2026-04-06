@@ -1,8 +1,8 @@
 package com.createspring.spring.bean;
 
+import com.createspring.spring.bean.post.PostBeanProcessor;
 import com.createspring.spring.event.EventListenerMethodProcessor;
 import com.createspring.spring.proxy.ProxyFactory;
-import com.createspring.spring.proxy.TransactionalInterceptor;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -44,7 +44,7 @@ public class BeanFactory {
      * 생성 직후 빈 후처리기를 적용하여 프록시가 필요한 빈은 프록시로 교체한다.
      */
     public static <T> T dependencyInject(Class<T> clazz) throws InvocationTargetException, InstantiationException, IllegalAccessException {
-        PostBeanProcessor postBeanProcessor = new PostBeanProcessor(new ProxyFactory());
+        PostBeanProcessor postBeanProcessor = new PostBeanProcessor();
         if (beans.containsKey(clazz)) {
             return clazz.cast(beans.get(clazz));
         }
@@ -59,7 +59,7 @@ public class BeanFactory {
         }
 
         Object instance = constructor.newInstance(dependencies);
-        Object processed = postBeanProcessor.scanTargetProxy(instance, clazz);
+        Object processed = postBeanProcessor.scanTargetProxy(clazz, instance);
         beans.put(clazz, processed);
         System.out.println(clazz + "빈 생성 완료");
         return clazz.cast(processed);
