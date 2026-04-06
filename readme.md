@@ -3,7 +3,6 @@
 
 순수 자바로 스프링을 구현하는 프로젝트.
 스프링의 클론코딩이 아닌 기반 지식을 활용해 스프링을 구현한다.
-외부 의존성은 Tomcat과 CGLIB이외에 사용하지 않는다.
 
 ## 프로젝트 구조
 
@@ -25,7 +24,7 @@ src/main/java/com/createspring/
 
 - [x] 컴포넌트 스캔
 - [x] 의존관계 주입 / 빈 생성
-- [x] `@Transactional` / 프록시 팩토리
+- [x] `@Transactional`
 - [ ] `@EventListener` (진행 중)
 - [ ] `@TransactionalEventListener`
 - [ ] `@Async`
