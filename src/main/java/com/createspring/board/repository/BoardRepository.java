@@ -1,6 +1,6 @@
 package com.createspring.board.repository;
 
-import com.createspring.ConnectionUtil;
+import com.createspring.spring.jdbc.ConnectionUtil;
 import com.createspring.board.entity.Post;
 import com.createspring.spring.annotation.Repository;
 import com.createspring.spring.annotation.Transactional;

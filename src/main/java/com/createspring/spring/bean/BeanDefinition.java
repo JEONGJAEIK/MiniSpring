@@ -8,20 +8,8 @@ public class BeanDefinition {
 
     private Class<?> beanClass;
 
-    private String beanClassName;
-
-    public BeanDefinition (Class<?> metaData) {
+    public BeanDefinition(Class<?> metaData) {
         this.beanClass = metaData;
-        this.beanClassName = createBeanName(metaData);
-    }
-
-    private String createBeanName(Class<?> clazz) {
-        String simpleName = clazz.getSimpleName();
-        return Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
-    }
-
-    public String getBeanClassName() {
-        return beanClassName;
     }
 
     public Class<?> getBeanClass() {

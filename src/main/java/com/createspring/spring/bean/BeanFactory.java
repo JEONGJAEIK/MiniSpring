@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -25,21 +23,13 @@ public class BeanFactory extends DefaultSingletonBeanRegistry {
 
     /**
      * 빈 팩토리를 초기화한다. 톰캣이 실행되기 전에 미리 실행한다.
-     * 빈 정의리스트를 가지고 와서 객체 생성과 의존관계 주입을 실행한다.
-     * 완료되면 빈 후처리기에 빈을 전달한다.
+     * 컴포넌트 스캔을 실행하고 메타데이터로 객체 생성과 의존관계 주입을 실행한다.
      */
     public void initialize(String basePackage) throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        Set<Class<?>> metaDataSet = initBeanDefinition(basePackage);
+        Set<Class<?>> metaDataSet = ComponentScan.scanComponent(basePackage);
         for (Class<?> clazz : metaDataSet) {
             dependencyInject(clazz);
         }
-    }
-
-    /**
-     * 빈 팩토리의 초기화시 발생한다. 컴포넌트 스캔으로 부터 얻은 빈정의를 저장하고 빈 팩토리에 전달한다.
-     */
-    public static Set<Class<?>> initBeanDefinition(String basePackage) throws IOException, URISyntaxException, ClassNotFoundException {
-        return ComponentScan.scanComponent(basePackage);
     }
 
     /**
@@ -66,10 +56,10 @@ public class BeanFactory extends DefaultSingletonBeanRegistry {
         }
 
         Object instance = constructor.newInstance(dependencies);
-        Object processed = PostBeanProcessor.scanTargetProxy(clazz, instance);
+        Object processed = PostBeanProcessor.processPostBean(clazz, instance);
         BeanDefinition beanDefinition = new BeanDefinition(clazz);
-        setBeanDefinitionMap(processed, beanDefinition);
-        System.out.println(beanDefinition.getBeanClassName() + "빈 생성 완료");
+        setBeanMap(processed, beanDefinition);
+        System.out.println(clazz.getSimpleName() + "빈 생성 완료");
         return clazz.cast(processed);
     }
 }
