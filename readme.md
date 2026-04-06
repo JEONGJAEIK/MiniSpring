@@ -8,7 +8,7 @@
 
 ```
 src/main/java/com/createspring/
-├── board/                          # 검증용 게시판 로직
+├── board/                          # 검증용 게시판 기능
 └── spring/                         # 스프링 로직
     ├── annotation/                 # 어노테이션 정의
     ├── bean/                       # 빈 로직
