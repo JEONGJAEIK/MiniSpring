@@ -2,6 +2,7 @@ package com.createspring.spring.transaction;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,15 +28,41 @@ public class TransactionSynchronizationManager {
         connectionHolder.set(con);
     }
 
+
     public static void commit() throws SQLException {
         connectionHolder.get().commit();
+        invokeSynchronizations();
     }
 
     public static void rollback() throws SQLException {
         connectionHolder.get().rollback();
+        eventHolder.remove();
     }
 
     public static void clear() {
         connectionHolder.remove();
+    }
+
+    /**
+     * AFTER_COMMIT 콜백을 등록한다.
+     */
+    public static void registerSynchronization(Runnable callback) {
+        if (eventHolder.get() == null) {
+            eventHolder.set(new ArrayList<>());
+        }
+        eventHolder.get().add(callback);
+    }
+
+    /**
+     * 등록된 콜백을 실행하고 정리한다.
+     */
+    private static void invokeSynchronizations() {
+        List<Runnable> callbacks = eventHolder.get();
+        if (callbacks != null) {
+            for (Runnable callback : callbacks) {
+                callback.run();
+            }
+            eventHolder.remove();
+        }
     }
 }

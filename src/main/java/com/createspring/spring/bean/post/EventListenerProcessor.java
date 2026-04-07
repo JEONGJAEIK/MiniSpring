@@ -6,6 +6,7 @@ import com.createspring.spring.event.ApplicationListenerMethodAdapter;
 import com.createspring.spring.event.SimpleEventListenerFactory;
 import com.createspring.spring.event.TransactionListenerMethodAdapter;
 import com.createspring.spring.event.TransactionalEventListenerFactory;
+import com.createspring.spring.transaction.TransactionPhase;
 
 import java.lang.reflect.Method;
 
@@ -36,7 +37,9 @@ public class EventListenerProcessor {
     private void eventTransactionalListenerMethod(Class<?> clazz, Method method) {
         String beanName = toBeanName(clazz);
         Class<?>[] triggerEvent = method.getParameterTypes();
-        TransactionListenerMethodAdapter adapter = new TransactionListenerMethodAdapter(beanName, method);
+        TransactionEventListener annotation = method.getAnnotation(TransactionEventListener.class);
+        TransactionPhase phase = annotation.phase();
+        TransactionListenerMethodAdapter adapter = new TransactionListenerMethodAdapter(beanName, method, phase);
         TransactionalEventListenerFactory.setListener(triggerEvent[0], adapter);
     }
 

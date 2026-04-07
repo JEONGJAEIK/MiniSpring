@@ -1,6 +1,8 @@
 package com.createspring.spring.bean;
 
 import com.createspring.spring.event.*;
+import com.createspring.spring.transaction.TransactionPhase;
+import com.createspring.spring.transaction.TransactionSynchronizationManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -36,10 +38,11 @@ public class AbstractApplicationContext implements ApplicationContext, Applicati
         Class<?> clazz = o.getClass();
         List<ApplicationListenerMethodAdapter> adapterList = factory.getAdapter(clazz);
         List<TransactionListenerMethodAdapter> txAdapterList = txFactory.getAdapter(clazz);
-        if (adapterList == null) {
-            processTransactionEventFactory(txAdapterList, o);
-        } else {
+        if (adapterList != null) {
             processSimpleEventFactory(adapterList, o);
+        }
+        if (txAdapterList != null) {
+            processTransactionEventFactory(txAdapterList, o);
         }
     }
 
@@ -60,18 +63,23 @@ public class AbstractApplicationContext implements ApplicationContext, Applicati
     }
 
     /**
-     * 트랜잭셔널 이벤트리스너를 실행한다.
+     * 트랜잭셔널 이벤트리스너를 TransactionSynchronizationManager에 콜백으로 등록한다.
+     * 트랜잭션 커밋 후 실행된다.
      */
-    //TODO 트랜잭션동기화매니저를 구현하고 콜백 등록 로직 구현 필요
     private void processTransactionEventFactory(List<TransactionListenerMethodAdapter> txAdapterList, Object o) {
         for (TransactionListenerMethodAdapter txAdapter : txAdapterList) {
             String beanName = txAdapter.getBeanName();
             Method method = txAdapter.getMethod();
             Object bean = getBean(beanName);
-            try {
-                method.invoke(bean, o);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException(e);
+            TransactionPhase phase = txAdapter.getPhase();
+            if (phase == TransactionPhase.AFTER_COMMIT) {
+                TransactionSynchronizationManager.registerSynchronization(() -> {
+                    try {
+                        method.invoke(bean, o);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
             }
         }
     }

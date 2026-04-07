@@ -1,5 +1,7 @@
 package com.createspring.spring.event;
 
+import com.createspring.spring.transaction.TransactionPhase;
+
 import java.lang.reflect.Method;
 
 /**
@@ -17,9 +19,15 @@ public class TransactionListenerMethodAdapter {
      */
     private Method method;
 
-    public TransactionListenerMethodAdapter(String beanName, Method method) {
+    /**
+     * 리스너의 트랜잭션 페이즈
+     */
+    private TransactionPhase phase;
+
+    public TransactionListenerMethodAdapter(String beanName, Method method, TransactionPhase phase) {
         this.beanName = beanName;
         this.method = method;
+        this.phase = phase;
     }
 
     public String getBeanName() {
@@ -29,4 +37,9 @@ public class TransactionListenerMethodAdapter {
     public Method getMethod() {
         return method;
     }
+
+    public TransactionPhase getPhase() {
+        return phase;
+    }
+
 }
