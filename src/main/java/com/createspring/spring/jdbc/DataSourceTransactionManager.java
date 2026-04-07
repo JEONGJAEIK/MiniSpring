@@ -57,6 +57,7 @@ public class DataSourceTransactionManager {
         if (con != null) {
             try {
                 con.close();
+                TransactionSynchronizationManager.clear();
             } catch (SQLException e) {
                 System.out.println("커넥션이 조졌다");
             }
