@@ -1,9 +1,11 @@
 package com.createspring.spring.jdbc;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * 트랜잭션 관리 클래스
+ */
 public class DataSourceTransactionManager {
     private static final ThreadLocal<Connection> connectionHolder = new ThreadLocal<>();
     private final DataSource dataSource;

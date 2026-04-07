@@ -7,6 +7,7 @@ import com.createspring.spring.bean.ComponentScan;
 import com.createspring.spring.bean.DefaultSingletonBeanRegistry;
 import com.createspring.spring.event.ApplicationEventPublisher;
 import com.createspring.spring.event.SimpleEventListenerFactory;
+import com.createspring.spring.event.TransactionalEventListenerFactory;
 import com.createspring.spring.jdbc.DataSource;
 import com.createspring.spring.jdbc.DataSourceTransactionManager;
 
@@ -30,7 +31,7 @@ public class InternalBeanProcessor {
      * 애플리케이션 컨텍스트를 미리 빈으로 등록한다.
      */
     public static void createContext(DefaultSingletonBeanRegistry registry) {
-        AbstractApplicationContext applicationContext = new AbstractApplicationContext((BeanFactory) registry, new SimpleEventListenerFactory());
+        AbstractApplicationContext applicationContext = new AbstractApplicationContext((BeanFactory) registry, new SimpleEventListenerFactory(), new TransactionalEventListenerFactory());
         registry.setBeanMap(applicationContext, new BeanDefinition(AbstractApplicationContext.class));
         registry.registerTypeMapping(ApplicationEventPublisher.class, AbstractApplicationContext.class);
     }

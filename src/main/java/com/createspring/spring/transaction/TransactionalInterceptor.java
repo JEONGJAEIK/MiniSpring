@@ -1,4 +1,4 @@
-package com.createspring.spring.proxy;
+package com.createspring.spring.transaction;
 
 import com.createspring.spring.annotation.Transactional;
 import com.createspring.spring.jdbc.DataSourceTransactionManager;

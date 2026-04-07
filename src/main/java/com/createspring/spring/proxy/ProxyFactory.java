@@ -1,6 +1,7 @@
 package com.createspring.spring.proxy;
 
 import com.createspring.spring.jdbc.DataSourceTransactionManager;
+import com.createspring.spring.transaction.TransactionalInterceptor;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.Factory;
@@ -11,7 +12,6 @@ import org.objenesis.ObjenesisStd;
  * 프록시 팩토리
  */
 public class ProxyFactory {
-
     private static final Objenesis objenesis = new ObjenesisStd();
 
     /**

@@ -14,8 +14,9 @@ src/main/java/com/createspring/
     ├── bean/                       # 빈 로직
     │   └── before/                 # 내부 빈 등록기 로직 (사용자 정의 빈 등록하기 전)
     │   └── post/                   # 빈 후 처리기 로직
+    ├── jdbc/                       # 커넥션 로직
     ├── proxy/                      # 프록시 로직
-    ├── jdbc/                       # 트랜잭션/커넥션 로직
+    ├── transacion/                 # 트랜잭션 로직
     └── event/                      # 이벤트 로직
 ```
 

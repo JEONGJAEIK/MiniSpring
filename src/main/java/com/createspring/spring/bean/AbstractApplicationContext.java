@@ -1,8 +1,6 @@
 package com.createspring.spring.bean;
 
-import com.createspring.spring.event.ApplicationEventPublisher;
-import com.createspring.spring.event.ApplicationListenerMethodAdapter;
-import com.createspring.spring.event.SimpleEventListenerFactory;
+import com.createspring.spring.event.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,10 +13,12 @@ import java.util.List;
 public class AbstractApplicationContext implements ApplicationContext, ApplicationEventPublisher {
     private final BeanFactory registry;
     private final SimpleEventListenerFactory factory;
+    private final TransactionalEventListenerFactory txFactory;
 
-    public AbstractApplicationContext(BeanFactory registry, SimpleEventListenerFactory factory) {
+    public AbstractApplicationContext(BeanFactory registry, SimpleEventListenerFactory factory, TransactionalEventListenerFactory txFactory) {
         this.registry = registry;
         this.factory = factory;
+        this.txFactory = txFactory;
     }
 
     @Override
@@ -35,9 +35,37 @@ public class AbstractApplicationContext implements ApplicationContext, Applicati
     public void publishEvent(Object o) {
         Class<?> clazz = o.getClass();
         List<ApplicationListenerMethodAdapter> adapterList = factory.getAdapter(clazz);
+        List<TransactionListenerMethodAdapter> txAdapterList = txFactory.getAdapter(clazz);
+        if (adapterList == null) {
+            processTransactionEventFactory(txAdapterList, o);
+        } else {
+            processSimpleEventFactory(adapterList, o);
+        }
+    }
+
+    /**
+     * 기본 이벤트리스너를 실행한다.
+     */
+    private void processSimpleEventFactory(List<ApplicationListenerMethodAdapter> adapterList, Object o) {
         for (ApplicationListenerMethodAdapter adapter : adapterList) {
             String beanName = adapter.getBeanName();
             Method method = adapter.getMethod();
+            Object bean = getBean(beanName);
+            try {
+                method.invoke(bean, o);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    /**
+     * 트랜잭셔널 이벤트리스너를 실행한다.
+     */
+    private void processTransactionEventFactory(List<TransactionListenerMethodAdapter> txAdapterList, Object o) {
+        for (TransactionListenerMethodAdapter txAdapter : txAdapterList) {
+            String beanName = txAdapter.getBeanName();
+            Method method = txAdapter.getMethod();
             Object bean = getBean(beanName);
             try {
                 method.invoke(bean, o);

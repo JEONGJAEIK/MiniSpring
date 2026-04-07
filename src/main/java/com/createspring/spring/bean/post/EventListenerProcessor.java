@@ -1,8 +1,11 @@
 package com.createspring.spring.bean.post;
 
 import com.createspring.spring.annotation.EventListener;
+import com.createspring.spring.annotation.TransactionEventListener;
 import com.createspring.spring.event.ApplicationListenerMethodAdapter;
 import com.createspring.spring.event.SimpleEventListenerFactory;
+import com.createspring.spring.event.TransactionListenerMethodAdapter;
+import com.createspring.spring.event.TransactionalEventListenerFactory;
 
 import java.lang.reflect.Method;
 
@@ -13,7 +16,6 @@ public class EventListenerProcessor {
 
     /**
      * 이벤트리스너 어노테이션이 존재하면 리스너 메타데이터를 등록한다.
-     * dependencyInject 안에서만 호출되므로 clazz는 항상 빈 대상 클래스다.
      */
     public void eventListenerMethod(Class<?> clazz) {
         for (Method method : clazz.getDeclaredMethods()) {
@@ -22,8 +24,20 @@ public class EventListenerProcessor {
                 Class<?>[] triggerEvent = method.getParameterTypes();
                 ApplicationListenerMethodAdapter adapter = new ApplicationListenerMethodAdapter(beanName, method);
                 SimpleEventListenerFactory.setListener(triggerEvent[0], adapter);
+            } else if (method.isAnnotationPresent(TransactionEventListener.class)) {
+                eventTransactionalListenerMethod(clazz, method);
             }
         }
+    }
+
+    /**
+     * 트랜잭셔널 이벤트리스너 어노테이션이 존재하면 리스너 메타데이터를 등록한다.
+     */
+    private void eventTransactionalListenerMethod(Class<?> clazz, Method method) {
+        String beanName = toBeanName(clazz);
+        Class<?>[] triggerEvent = method.getParameterTypes();
+        TransactionListenerMethodAdapter adapter = new TransactionListenerMethodAdapter(beanName, method);
+        TransactionalEventListenerFactory.setListener(triggerEvent[0], adapter);
     }
 
     private String toBeanName(Class<?> clazz) {
