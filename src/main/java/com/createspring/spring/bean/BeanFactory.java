@@ -15,16 +15,11 @@ import java.util.Set;
  */
 public class BeanFactory extends DefaultSingletonBeanRegistry {
 
-    private static final BeanFactory singletonBeanFactory = new BeanFactory();
     private final PostBeanProcessor postBeanProcessor;
 
     // 합성
-    private BeanFactory() {
+    public BeanFactory() {
         this.postBeanProcessor = new PostBeanProcessor(new TransactionalProcessor(), new EventListenerProcessor());
-    }
-
-    public static BeanFactory getBeanFactory() {
-        return singletonBeanFactory;
     }
 
     /**
@@ -52,13 +47,13 @@ public class BeanFactory extends DefaultSingletonBeanRegistry {
             return clazz.cast(singletonMap.get(beanName));
         }
 
+        System.out.println(clazz.getSimpleName() + "의존관계 주입 시작");
         Constructor<?> constructor = clazz.getConstructors()[0];
         Class<?>[] paramTypes = constructor.getParameterTypes();
         Object[] dependencies = new Object[paramTypes.length];
 
         for (int i = 0; i < paramTypes.length; i++) {
             dependencies[i] = dependencyInject(paramTypes[i]);
-            System.out.println(dependencies[i] + "의존관계 주입 완료");
         }
 
         Object instance = constructor.newInstance(dependencies);

@@ -1,5 +1,6 @@
 package com.createspring.spring.bean;
 
+
 /**
  * 빈 저장소 인터페이스
  */

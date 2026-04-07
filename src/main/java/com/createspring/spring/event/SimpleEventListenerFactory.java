@@ -1,6 +1,8 @@
 package com.createspring.spring.event;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,15 +14,17 @@ public class SimpleEventListenerFactory {
     /**
      * 이벤트리스너의 빈 이름을 가지고 있는 해시 맵
      */
-    private static Map<Class<?>[], ApplicationListenerMethodAdapter> listenerList = new HashMap<>();
+    private static Map<Class<?>, List<ApplicationListenerMethodAdapter>> listenerList = new HashMap<>();
 
-    public static void setListener(Class<?>[] trigger, ApplicationListenerMethodAdapter adapter) {
-        listenerList.put(trigger, adapter);
+    public static void setListener(Class<?> trigger, ApplicationListenerMethodAdapter adapter) {
+        if (listenerList.containsKey(trigger)) {
+            listenerList.get(trigger).add(adapter);
+        } else {
+            listenerList.put(trigger, new ArrayList<>(List.of(adapter)));
+        }
     }
 
-    public static ApplicationListenerMethodAdapter getAdapter(Class<?> clazz) {
+    public List<ApplicationListenerMethodAdapter> getAdapter(Class<?> clazz) {
         return listenerList.get(clazz);
     }
-
-
 }

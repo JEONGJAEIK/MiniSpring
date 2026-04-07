@@ -23,7 +23,7 @@ public class EventListenerProcessor {
                     String beanName = registry.getBeanName(clazz);
                     Class<?>[] triggerEvent = method.getParameterTypes();
                     ApplicationListenerMethodAdapter adapter = new ApplicationListenerMethodAdapter(beanName, method);
-                    SimpleEventListenerFactory.setListener(triggerEvent, adapter);
+                    SimpleEventListenerFactory.setListener(triggerEvent[0], adapter);
                 }
             }
         }

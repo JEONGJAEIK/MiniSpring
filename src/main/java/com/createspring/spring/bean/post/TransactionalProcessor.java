@@ -5,6 +5,9 @@ import com.createspring.spring.proxy.ProxyFactory;
 
 import java.lang.reflect.Method;
 
+/**
+ * 트랜잭션 담당 빈 후처리기
+ */
 public class TransactionalProcessor {
 
     /**

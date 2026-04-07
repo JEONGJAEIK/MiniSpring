@@ -25,8 +25,8 @@ public class Main {
      * 모든 객체는 싱글톤이다.
      */
     public static void main(String[] args) throws LifecycleException, IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        BeanFactory beanFactory = BeanFactory.getBeanFactory();
-        beanFactory.initialize("com.createspring");
+        BeanFactory beanFactory = new BeanFactory();
+        beanFactory.initialize("com.createspring.board");
         Tomcat tomcat = new Tomcat();
         tomcat.setPort(8080);
         tomcat.getConnector();

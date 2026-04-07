@@ -5,7 +5,6 @@ import com.createspring.spring.annotation.Component;
 
 import java.util.List;
 
-@Component
 public class BoardEventPublisher2 {
     private final List<BoardEventListener> boardEventListeners;
 
