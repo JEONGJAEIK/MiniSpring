@@ -4,6 +4,7 @@ import com.createspring.spring.bean.post.EventListenerProcessor;
 import com.createspring.spring.bean.post.PostBeanProcessor;
 import com.createspring.spring.bean.post.TransactionalProcessor;
 import com.createspring.spring.bean.before.InternalBeanProcessor;
+import com.createspring.spring.jdbc.DataSourceTransactionManager;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -15,13 +16,7 @@ import java.util.Set;
  * 빈 팩토리
  */
 public class BeanFactory extends DefaultSingletonBeanRegistry {
-
-    private final PostBeanProcessor postBeanProcessor;
-
-    // 합성
-    public BeanFactory() {
-        this.postBeanProcessor = new PostBeanProcessor(new TransactionalProcessor(), new EventListenerProcessor());
-    }
+    private PostBeanProcessor postBeanProcessor;
 
     /**
      * 빈 팩토리를 초기화한다. 톰캣이 실행되기 전에 미리 실행한다.
@@ -30,6 +25,8 @@ public class BeanFactory extends DefaultSingletonBeanRegistry {
     public void initialize(String basePackage) throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Set<Class<?>> metaDataSet = ComponentScan.scanComponent(basePackage);
         InternalBeanProcessor.process(this);
+        DataSourceTransactionManager txManager = (DataSourceTransactionManager) getBean("dataSourceTransactionManager");
+        this.postBeanProcessor = new PostBeanProcessor(new TransactionalProcessor(txManager), new EventListenerProcessor());
         for (Class<?> clazz : metaDataSet) {
             dependencyInject(clazz);
         }

@@ -17,7 +17,8 @@ public class BoardRepository {
     public void save(Post p) {
         String sql = "insert into post(id, title, content, author) values(?, ?, ?, ?)";
         try {
-            Connection con = ConnectionUtil.getConnection();
+            ConnectionUtil connectionUtil = new ConnectionUtil();
+            Connection con = connectionUtil.getConnection();
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setLong(1, p.getId());
             pstmt.setString(2, p.getTitle());
@@ -33,12 +34,12 @@ public class BoardRepository {
 
     public Post findById(Long id) {
         String sql = "select * from post where id = ?";
-        Connection con = null;
         PreparedStatement pstmt = null;
-        ResultSet rs = null;
+        ResultSet rs;
 
         try {
-            con = ConnectionUtil.getConnection();
+            ConnectionUtil connectionUtil = new ConnectionUtil();
+            Connection con = connectionUtil.getConnection();
             pstmt = con.prepareStatement(sql);
             pstmt.setLong(1, id);
             rs = pstmt.executeQuery();

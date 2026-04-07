@@ -12,9 +12,11 @@ import java.lang.reflect.Method;
  * 트랜잭셔널 인터셉터
  */
 public class TransactionalInterceptor implements MethodInterceptor {
+    private final DataSourceTransactionManager dataSourceTransactionManager;
     private final Object object;
 
-    public TransactionalInterceptor(Object object) {
+    public TransactionalInterceptor(Object object, DataSourceTransactionManager dataSourceTransactionManager) {
+        this.dataSourceTransactionManager = dataSourceTransactionManager;
         this.object = object;
     }
 
@@ -24,16 +26,16 @@ public class TransactionalInterceptor implements MethodInterceptor {
     @Override
     public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
         if (method.isAnnotationPresent(Transactional.class)) {
-            DataSourceTransactionManager.begin();
+            dataSourceTransactionManager.begin();
             try {
                 Object result = methodProxy.invoke(object, objects);
-                DataSourceTransactionManager.commit();
+                dataSourceTransactionManager.commit();
                 return result;
             } catch (Exception e) {
-                DataSourceTransactionManager.rollback();
+                dataSourceTransactionManager.rollback();
                 throw e;
             } finally {
-                DataSourceTransactionManager.close();
+                dataSourceTransactionManager.close();
             }
         }
         return methodProxy.invoke(object, objects);

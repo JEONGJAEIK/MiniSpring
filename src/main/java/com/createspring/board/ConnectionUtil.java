@@ -1,5 +1,7 @@
 package com.createspring.board;
 
+import com.createspring.spring.jdbc.DataSourceTransactionManager;
+
 import java.sql.*;
 
 /**
@@ -14,12 +16,9 @@ public class ConnectionUtil {
     /**
      * 커넥션 획득 스레드로컬에 커넥션이 있으면 그대로 활용한다.
      */
-    public static Connection getConnection() throws SQLException {
-        Connection con = connectionHolder.get();
-        if (con != null) {
-            return con;
-        }
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    public Connection getConnection() throws SQLException {
+        DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager(URL, USER, PASSWORD);
+        return dataSourceTransactionManager.getConnection();
     }
 
     /**
