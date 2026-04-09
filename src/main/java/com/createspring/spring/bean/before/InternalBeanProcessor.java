@@ -23,17 +23,7 @@ public class InternalBeanProcessor {
      * 필수 빈들을 미리 등록한다.
      */
     public static void process(DefaultSingletonBeanRegistry registry, String basePackage) throws Exception {
-        createContext(registry);
         createTxManager(registry, basePackage);
-    }
-
-    /**
-     * 애플리케이션 컨텍스트를 미리 빈으로 등록한다.
-     */
-    public static void createContext(DefaultSingletonBeanRegistry registry) {
-        AbstractApplicationContext applicationContext = new AbstractApplicationContext((BeanFactory) registry, new SimpleEventListenerFactory(), new TransactionalEventListenerFactory());
-        registry.setBeanMap(applicationContext, new BeanDefinition(AbstractApplicationContext.class));
-        registry.registerTypeMapping(ApplicationEventPublisher.class, AbstractApplicationContext.class);
     }
 
     /**

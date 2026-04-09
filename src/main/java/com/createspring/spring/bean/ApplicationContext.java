@@ -11,5 +11,7 @@ public interface ApplicationContext {
      */
     Object getBean(String beanName);
 
+    void initialize(String basePackage) throws Exception;
+
     String getBeanName(Class<?> clazz);
 }

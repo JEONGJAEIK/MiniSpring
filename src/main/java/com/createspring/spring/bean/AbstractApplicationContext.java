@@ -12,25 +12,23 @@ import java.util.List;
  * 애플리케이션 컨텍스트를 구현한다.
  * 빈 저장소를 집약하여 빈 반환등의 기본 로직들을 추상화 시킴
  */
-public class AbstractApplicationContext implements ApplicationContext, ApplicationEventPublisher {
-    private final BeanFactory registry;
-    private final SimpleEventListenerFactory factory;
-    private final TransactionalEventListenerFactory txFactory;
+public class AbstractApplicationContext extends BeanFactory implements ApplicationContext, ApplicationEventPublisher {
+    private final SimpleEventListenerFactory factory = new SimpleEventListenerFactory();
+    private final TransactionalEventListenerFactory txFactory = new TransactionalEventListenerFactory();
 
-    public AbstractApplicationContext(BeanFactory registry, SimpleEventListenerFactory factory, TransactionalEventListenerFactory txFactory) {
-        this.registry = registry;
-        this.factory = factory;
-        this.txFactory = txFactory;
+    public AbstractApplicationContext() {
+        setBeanMap(this, new BeanDefinition(AbstractApplicationContext.class));
+        registerTypeMapping(ApplicationEventPublisher.class, AbstractApplicationContext.class);
     }
 
     @Override
     public Object getBean(String beanName) {
-        return registry.singletonMap.get(beanName);
+        return singletonMap.get(beanName);
     }
 
     @Override
     public String getBeanName(Class<?> clazz) {
-        return registry.typeToNameMap.get(clazz);
+        return typeToNameMap.get(clazz);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.createspring;
 
-import com.createspring.spring.bean.BeanFactory;
+import com.createspring.spring.bean.AbstractApplicationContext;
+import com.createspring.spring.bean.ApplicationContext;
 import jakarta.servlet.Servlet;
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
@@ -17,17 +18,17 @@ public class Main {
      * 모든 객체는 싱글톤이다.
      */
     public static void main(String[] args) throws Exception {
-        BeanFactory beanFactory = new BeanFactory();
-        beanFactory.initialize("com.createspring");
+        ApplicationContext applicationContext = new AbstractApplicationContext();
+        applicationContext.initialize("com.createspring");
         Tomcat tomcat = new Tomcat();
         tomcat.setPort(8080);
         tomcat.getConnector();
 
         Context context = tomcat.addContext("", new File(".").getAbsolutePath());
-        Tomcat.addServlet(context, "postSearchController", (Servlet) beanFactory.getBean("postSearchController"));
+        Tomcat.addServlet(context, "postSearchController", (Servlet) applicationContext.getBean("postSearchController"));
         context.addServletMappingDecoded("/post/search", "postSearchController");
 
-        Tomcat.addServlet(context, "postCreateController", (Servlet) beanFactory.getBean("postCreateController"));
+        Tomcat.addServlet(context, "postCreateController", (Servlet) applicationContext.getBean("postCreateController"));
         context.addServletMappingDecoded("/post/create", "postCreateController");
 
         tomcat.start();
