@@ -13,7 +13,7 @@ public class TransactionalEventListenerFactory {
     /**
      * 트랜잭셔널 이벤트리스너의 빈 이름을 가지고 있는 해시 맵
      */
-    private static Map<Class<?>, List<TransactionListenerMethodAdapter>> listenerList = new HashMap<>();
+    private static final Map<Class<?>, List<TransactionListenerMethodAdapter>> listenerList = new HashMap<>();
 
     public static void setListener(Class<?> trigger, TransactionListenerMethodAdapter adapter) {
         if (listenerList.containsKey(trigger)) {

@@ -10,12 +10,12 @@ public class ApplicationListenerMethodAdapter {
     /**
      * 리스너 객체의 빈 네임
      */
-    private String beanName;
+    private final String beanName;
 
     /**
      * 리스너가 실행해야할 메서드
      */
-    private Method method;
+    private final Method method;
 
     public ApplicationListenerMethodAdapter(String beanName, Method method) {
         this.beanName = beanName;

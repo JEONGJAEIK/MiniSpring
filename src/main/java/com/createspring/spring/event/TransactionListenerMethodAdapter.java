@@ -12,17 +12,17 @@ public class TransactionListenerMethodAdapter {
     /**
      * 리스너 객체의 빈 네임
      */
-    private String beanName;
+    private final String beanName;
 
     /**
      * 리스너가 실행해야할 메서드
      */
-    private Method method;
+    private final Method method;
 
     /**
      * 리스너의 트랜잭션 페이즈
      */
-    private TransactionPhase phase;
+    private final TransactionPhase phase;
 
     public TransactionListenerMethodAdapter(String beanName, Method method, TransactionPhase phase) {
         this.beanName = beanName;

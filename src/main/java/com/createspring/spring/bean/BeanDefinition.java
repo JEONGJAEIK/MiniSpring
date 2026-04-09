@@ -6,7 +6,7 @@ package com.createspring.spring.bean;
  */
 public class BeanDefinition {
 
-    private Class<?> beanClass;
+    private final Class<?> beanClass;
 
     public BeanDefinition(Class<?> metaData) {
         this.beanClass = metaData;
