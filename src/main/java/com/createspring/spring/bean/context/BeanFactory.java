@@ -40,7 +40,7 @@ public class BeanFactory extends DefaultSingletonBeanRegistry {
      * 리플렉션을 이용하여 객체를 생성하고 빈에 삽입한다.
      * 생성 직후 빈 후처리기를 적용하여 프록시가 필요한 빈은 프록시로 교체한다.
      */
-    public <T> T dependencyInject(Class<T> clazz) throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    private <T> T dependencyInject(Class<T> clazz) throws InvocationTargetException, InstantiationException, IllegalAccessException {
         if (typeToNameMap.containsKey(clazz)) {
             String beanName = typeToNameMap.get(clazz);
             return clazz.cast(singletonMap.get(beanName));

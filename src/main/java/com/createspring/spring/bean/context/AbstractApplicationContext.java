@@ -10,8 +10,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * 애플리케이션 컨텍스트를 구현한다.
- * 빈 저장소를 집약하여 빈 반환등의 기본 로직들을 추상화 시킴
+ * 애플리케이션컨텍스트, 이벤트퍼블리셔를 구현.
+ * BeanFactory를 합성으로 보유
  */
 public class AbstractApplicationContext implements ApplicationContext, ApplicationEventPublisher {
     private final BeanFactory beanFactory = new BeanFactory();
